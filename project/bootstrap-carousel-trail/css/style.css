@@ -15,35 +15,25 @@ form,fieldset,label,select,checkbox,input,textarea {
   outline:none;
   list-style:none;
 }
-/*select, input, textarea        { font-size:12px; vertical-align:middle; }*/
-/*textarea                       { vertical-align:top; }*/
-/*:focus                         { outline:none; }
-input[type=submit]             { cursor:pointer; }
-img, fieldset                  { border:0; }
-table                          { border-collapse:collapse; border-spacing:0; }
-a:link, a:visited              { font-family:'Arimo', sans-serif; font-size:14px; color:#333; text-decoration:none; }
-a:hover                        { text-decoration:none; }*/
-
-
 
 
 /*----------------------------------------------------------------------------------*/
-/*-------------------------------> Carousel styles <--------------------------------*/
+/*-----------------------------> Trail Carousel styles <----------------------------*/
 /*----------------------------------------------------------------------------------*/
 .trial-bs-carousel.with-fade .item {
   left: 0;
 }
-.csstransitions .trial-bs-carousel.with-fade .item {
+.trial-bs-carousel.with-fade .item {
   transition-property: opacity;
 }
-.csstransitions .trial-bs-carousel.with-fade .item,
-.csstransitions .trial-bs-carousel.with-fade .active.left,
-.csstransitions .trial-bs-carousel.with-fade .active.right {
+.trial-bs-carousel.with-fade .item,
+.trial-bs-carousel.with-fade .active.left,
+.trial-bs-carousel.with-fade .active.right {
   opacity: 0;
 }
-.csstransitions .trial-bs-carousel.with-fade .active,
-.csstransitions .trial-bs-carousel.with-fade .next.left,
-.csstransitions .trial-bs-carousel.with-fade .prev.right {
+.trial-bs-carousel.with-fade .active,
+.trial-bs-carousel.with-fade .next.left,
+.trial-bs-carousel.with-fade .prev.right {
   opacity: 1;
 }
 
@@ -54,7 +44,6 @@ a:hover                        { text-decoration:none; }*/
   bottom: 50px;
   z-index: 15;
 }
-
 .trial-bs-carousel .carousel-nav-list {
   width: 720px;
   margin: -50px 0 0 -60px;
@@ -113,7 +102,7 @@ a:hover                        { text-decoration:none; }*/
   width: 0px;
   margin: -2px;
 }
-.csstransitions .trial-bs-carousel .active-trail-block {
+.trial-bs-carousel .active-trail-block {
   -webkit-transition: .6s ease-in-out width;
        -o-transition: .6s ease-in-out width;
           transition: .6s ease-in-out width;
