@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
+
+    <script src="/js/vendor/jquery-1.11.2.js"></script>
+    <script src="/js/vendor/bootstrap.js"></script>
+
+    <script src="/bootstrap-carousel-trail/js/slider_test.js"></script>
+
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/bootstrap-carousel-trail/css/style.css">
+
+  </head>
+  <body>
+
+    <div class="container">
+      <h1>Trail bootstrap carousel</h1>
+      <div class="row">
+        <div class="col-xs-12">
+
+          <div id="testing-carousel" class="carousel slide trial-bs-carousel with-fade" data-trail-bs-carousel="">
+
+            <!-- Indicators -->
+            <div class="carousel-nav-block">
+
+              <!--Clickable bootstrap indicators-->
+              <ul class="carousel-indicators carousel-nav-list" data-carousel-list="">
+                <li><span data-target="#testing-carousel" data-slide-to="0" class="nav-text">MVP</span></li>
+                <li><span data-target="#testing-carousel" data-slide-to="1" class="nav-text">Paid Beta</span></li>
+                <li><span data-target="#testing-carousel" data-slide-to="2" class="nav-text">up to 100 users</span></li>
+                <li><span data-target="#testing-carousel" data-slide-to="3" class="nav-text">100-1000 users</span></li>
+                <li><span data-target="#testing-carousel" data-slide-to="4" class="nav-text">1000+ users</span></li>
+                <li><span data-target="#testing-carousel" data-slide-to="5" class="nav-text">Pre-IPO</span></li>
+              </ul>
+
+              <!--Trail path for all indicators-->
+              <ul class="carousel-nav-trail">
+                <li><span class="trail-mark"></span></li>
+                <li><span class="trail-mark"></span></li>
+                <li><span class="trail-mark"></span></li>
+                <li><span class="trail-mark"></span></li>
+                <li><span class="trail-mark"></span></li>
+                <li><span class="trail-mark"></span></li>
+              </ul>
+
+              <!--Trail path from the beginning to the current indicator-->
+              <div class="active-trail-block" data-active-trail="">
+                <div class="active-trail-holder">
+                  <ul class="carousel-nav-trail active">
+                    <li><span class="trail-mark"></span></li>
+                    <li><span class="trail-mark"></span></li>
+                    <li><span class="trail-mark"></span></li>
+                    <li><span class="trail-mark"></span></li>
+                    <li><span class="trail-mark"></span></li>
+                    <li><span class="trail-mark"></span></li>
+                  </ul>
+                </div>
+                <span class="current-trail-mark"></span>
+              </div>
+
+            </div>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+              <div class="item active">
+                <div style="height: 400px; text-align: center; background: #000;">#38A Slide One</div>
+              </div>
+              <div class="item">
+                <div style="height: 400px; text-align: center; background: #000;">#A83 Slide Two</div>
+              </div>
+              <div class="item">
+                <div style="height: 400px; text-align: center; background: #000;">#8A3 Slide Three</div>
+              </div>
+              <div class="item">
+                <div style="height: 400px; text-align: center; background: #38A;">Slide One</div>
+              </div>
+              <div class="item">
+                <div style="height: 400px; text-align: center; background: #A83;">Slide Two</div>
+              </div>
+              <div class="item">
+                <div style="height: 400px; text-align: center; background: #8A3;">Slide Three</div>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#testing-carousel" role="button" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#testing-carousel" role="button" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
