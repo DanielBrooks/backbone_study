@@ -1,0 +1,111 @@
+/*----------------------------------------------------------------------------------*/
+/*-----------------------------> Trail Carousel styles <----------------------------*/
+/*----------------------------------------------------------------------------------*/
+.trial-bs-carousel.with-fade .item {
+  left: 0;
+}
+.trial-bs-carousel.with-fade .item {
+  transition-property: opacity;
+}
+.trial-bs-carousel.with-fade .item,
+.trial-bs-carousel.with-fade .active.left,
+.trial-bs-carousel.with-fade .active.right {
+  opacity: 0;
+}
+.trial-bs-carousel.with-fade .active,
+.trial-bs-carousel.with-fade .next.left,
+.trial-bs-carousel.with-fade .prev.right {
+  opacity: 1;
+}
+
+
+.trial-bs-carousel .carousel-nav-block {
+  position: absolute;
+  left: 360px;
+  bottom: 50px;
+  z-index: 15;
+}
+.trial-bs-carousel .carousel-nav-list {
+  width: 720px;
+  margin: -50px 0 0 -60px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.trial-bs-carousel .carousel-nav-list > li {
+  float: left;
+  width: 120px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #FFF;
+
+  text-indent: 0;
+  background: transparent;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  cursor: default;
+}
+.trial-bs-carousel .carousel-nav-list .nav-text {
+  cursor: pointer;
+}
+
+
+.trial-bs-carousel .carousel-nav-trail {
+  width: 600px;
+}
+.trial-bs-carousel .carousel-nav-trail > li {
+  float: left;
+  width: 120px;
+  height: 1px;
+  background: #FFF;
+  position: relative;
+}
+.trial-bs-carousel .carousel-nav-trail.active > li {
+  background: #2FC48A;
+}
+.trial-bs-carousel .carousel-nav-trail > li:last-child {
+  width: 0;
+}
+.trial-bs-carousel .carousel-nav-trail .trail-mark {
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: -2px 0 0 -2px;
+  border-radius: 3px;
+  background: inherit;
+}
+
+.trial-bs-carousel .active-trail-block {
+  position: relative;
+  width: 0px;
+  margin: -2px;
+}
+.trial-bs-carousel .active-trail-block {
+  -webkit-transition: .6s ease-in-out width;
+       -o-transition: .6s ease-in-out width;
+          transition: .6s ease-in-out width;
+}
+.trial-bs-carousel .active-trail-holder {
+  overflow: hidden;
+  width: 100%;
+  padding: 2px;
+}
+.trial-bs-carousel .current-trail-mark {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 5px;
+  background: #2FC48A;
+  margin: -2px -7px 0 0;
+}
+
+
+/*----------------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------------*/
