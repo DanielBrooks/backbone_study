@@ -11,6 +11,15 @@ $(function() {
 
 
   var TrailBuilder = function() {
+
+    /* options object for the init() function
+      {
+        $trailWrap:,
+        steps: <int digit>,
+        currentStep: <int digit>
+      }
+    */
+
     return {
       list: '<ul class="slider-nav-trail"></ul>',
       listLine: '<span class="filling-line"></span>',
@@ -66,46 +75,78 @@ $(function() {
         this.trailPattern.children('li').css('width', width);
         this.trailActive.css('width', this.trailPattern.outerWidth())
           .children('li').css('width', width);
+      },
+      destroy: function() {
+        this.options.$trailWrap.slider('destroy');
+        this.options.$trailWrap.remove();
       }
     }
   };
 
-  var $select = $( "#minbeds" ),
-      steps = $select.find('option').length,
-      currentStep = $select.find('option:selected').index(),
-      $amount = $('[data-slider-value]'),
-      $slider;
+  $.fn.trailJqSlider = function(action) {
+    var $select = this;
 
-  $amount.text($select[0].selectedIndex + 1);
-
-  $slider = $( "<div></div>" ).insertAfter( $select ).slider({
-    min: 1,
-    max: steps,
-    range: "min",
-    value: $select[ 0 ].selectedIndex + 1,
-    slide: function( event, ui ) {
-      $select[ 0 ].selectedIndex = ui.value - 1;
-      $amount.text(ui.value);
-      $select[0].trailBuilder.setCurrent(ui.value - 1);
-    },
-    create: function( event, ui ) {
-      var $trailWrap = $(event.target);
-
-      $select[0].trailBuilder = new TrailBuilder;
-      $select[0].trailBuilder.init({
-        $trailWrap: $trailWrap,
-        steps: steps,
-        currentStep: currentStep
-      });
-      console.log(1);
+    if (!$select.length) {
+      $select = $('[data-trail-jq-slider]');
     }
+    $select.each(function() {
+
+      var $select = $(this),
+          $root = $select.closest('[data-trail-slider-block]'),
+          $amount = $root.find('[data-slider-value]'),
+
+          steps = $select.find('option').length,
+          currentStep = $select.find('option:selected').index(),
+          $slider;
+
+      if (action == 'destroy') {
+        $select.removeClass('hidden').off('trailSliderChange');
+        $select[0].trailBuilder.destroy();
+        delete $select[0].trailBuilder;
+        return false;
+      }
+      if (typeof($select[0].trailBuilder) != 'undefined') {
+        return false;
+      }
+
+      $amount.text($select[0].selectedIndex + 1);
+
+      $slider = $( "<div></div>" ).insertAfter( $select )
+      $slider.slider({
+        min: 1,
+        max: steps,
+        range: "min",
+        value: $select[ 0 ].selectedIndex + 1,
+        slide: function( event, ui ) {
+          $select[ 0 ].selectedIndex = ui.value - 1;
+          $amount.text(ui.value);
+          $select[0].trailBuilder.setCurrent(ui.value - 1);
+        },
+        create: function( event, ui ) {
+          var $trailWrap = $(event.target);
+
+          $select.addClass('hidden');
+          $select[0].trailBuilder = new TrailBuilder;
+          $select[0].trailBuilder.init({
+            $trailWrap: $slider,
+            steps: steps,
+            currentStep: currentStep
+          });
+          console.log(1);
+        }
+      });
+
+      $select.on('trailSliderChange', function() {
+        $slider.slider( "value", this.selectedIndex + 1 );
+        $amount.text(this.selectedIndex + 1);
+        this.trailBuilder.setCurrent(this.selectedIndex);
+      });
+    });
+  };
+
+  $(document).on('change', '[data-trail-jq-slider]', function() {
+    $(this).trigger('trailSliderChange');
   });
-
-  $select.change(function() {
-    $slider.slider( "value", this.selectedIndex + 1 );
-    $amount.text(this.selectedIndex + 1);
-  });
-
-
+  $('[data-trail-jq-slider]').trailJqSlider();
 
 });
