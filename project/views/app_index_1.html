@@ -20,16 +20,37 @@
 
   </head>
   <body>
-    <h1>Backbone study</h1>
 
     <div id="notes-wrap">
-      <button id="new-note">New note</button>
-
+      <div class="container">
+        <h1>Backbone study</h1>
+        <div class="row">
+          <div class="col-xs-6">
+            <form data-note-form="">
+              <ul>
+                <li class="form-group">
+                  <input type="text" class="form-control" placeholder="Title" data-note-title="">
+                </li>
+                <li class="form-group">
+                  <textarea class="form-control" placeholder="Note content" data-note-content=""></textarea>
+                </li>
+                <li>
+                  <button id="new-note" type="button" class="btn btn-primary">Add note</button>
+                </li>
+              </ul>
+            </form>
+          </div>
+          <div class="col-xs-6">
+            <ul class="list-group notes-list" data-notes-list=""></ul>
+          </div>
+        </div>
+      </div>
     </div>
+
     <script id="note-template" type="text/template">
-      <strong><%- title %></strong>
-      <div><%- content %></div>
-      <a href="#">Remove</a>
+      <a href="#" data-remove-note="" alt="Delete note" class="btn-remove glyphicon glyphicon-remove"></a>
+      <span class="title"><%- title %></span>
+      <span class="note"><%- content %></span>
     </script>
   </body>
 </html>

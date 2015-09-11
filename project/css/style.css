@@ -1,3 +1,61 @@
-.hidden {
-  display: none;
+/*----------------------------------------------------------------------------------*/
+/*------------------------------RESET DEFAULT STYLES--------------------------------*/
+/*----------------------------------------------------------------------------------*/
+html,body                       { width:100%; height:100%; }
+body                            { padding:0; margin:0; background:#f7f7f7; }
+
+div,p,a,span,em,strong,img,
+/*h1,h2,h3,h4,h5,h6,*/
+ul,ol,li,
+dl,dt,dd,
+table,td,tr,
+form,fieldset,label,select,checkbox,input,textarea {
+  padding:0;
+  margin:0;
+  outline:none;
+  list-style:none;
 }
+/*select, input, textarea        { font-size:12px; vertical-align:middle; }*/
+/*textarea                       { vertical-align:top; }*/
+/*:focus                         { outline:none; }
+input[type=submit]             { cursor:pointer; }
+img, fieldset                  { border:0; }
+table                          { border-collapse:collapse; border-spacing:0; }
+a:link, a:visited              { font-family:'Arimo', sans-serif; font-size:14px; color:#333; text-decoration:none; }
+a:hover                        { text-decoration:none; }*/
+/*----------------------------------------------------------------------------------*/
+/*-------------------------------------DEFAULT CLASSES------------------------------*/
+/*----------------------------------------------------------------------------------*/
+/*.hidden {
+  display: none;
+}*/
+
+.notes-list > li {
+  padding: 0;
+}
+.notes-list .title {
+  display: block;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px 15px;
+}
+.notes-list .note {
+  display: block;
+  padding: 0 15px 10px;
+}
+.notes-list .btn-remove {
+  color: #CCC;
+  display: block;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  text-decoration: none;
+}
+.notes-list .btn-remove:hover {
+  color: #333;
+}
+
+
+/*----------------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------------*/

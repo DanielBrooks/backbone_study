@@ -21,10 +21,11 @@ $(function() {
 
 
   var NoteView = Backbone.View.extend({
-    tagName: 'div',
+    tagName: 'li',
+    className: 'list-group-item',
     template: _.template($('#note-template').html()),
     events: {
-      'click a': 'removeNote'
+      'click [data-remove-note]': 'removeNote'
     },
     initialize: function() {
       this.listenTo(this.model, 'destroy', this.remove);
@@ -35,6 +36,7 @@ $(function() {
     },
     removeNote: function() {
       this.model.destroy();
+      return false;
     }
   });
 
@@ -46,7 +48,10 @@ $(function() {
     },
     initialize: function() {
       console.log(1);
-
+      this.notesList = this.$('[data-notes-list]');
+      this.$noteForm = this.$('[data-note-form]');
+      this.$title = this.$noteForm.find('[data-note-title]');
+      this.$content = this.$noteForm.find('[data-note-content]');
       this.listenTo(Notes, 'add', this.addOne);
 
       Notes.fetch();
@@ -57,13 +62,49 @@ $(function() {
     addOne: function(passedModel) {
       console.log(3);
       var view = new NoteView({model: passedModel});
-      this.$el.append(view.render().el);
+      this.notesList.append(view.render().el);
     },
-    createNote: function() {
-      Notes.create({
-        title: 'test title',
-        content: 'some test content'
-      });
+    createNote: function(bb) {
+      var validation = this.newNoteValidation();
+      if (validation) {
+        Notes.create(validation);
+      }
+    },
+    newNoteValidation: function() {
+      var note = {
+            title: undefined,
+            content: undefined
+          },
+          $title = this.$title,
+          $titleBlock = $title.closest('.form-group'),
+          $content = this.$content,
+          $contentBlock = $content.closest('.form-group');
+
+      if ($title.val().length > 3) {
+        note.title = $title.val();
+        $titleBlock.removeClass('has-error');
+      }
+      else {
+        $titleBlock.addClass('has-error');
+      }
+
+      if ($content.val().length) {
+        note.content = $content.val();
+        $contentBlock.removeClass('has-error');
+      }
+      else {
+        $contentBlock.addClass('has-error');
+      }
+      return this.validateData(note);
+    },
+    validateData: function(obj) {
+      var prop;
+      for (prop in obj) {
+        if (typeof(obj[prop]) == 'undefined') {
+          return false;
+        }
+      }
+      return obj;
     }
 
   });
