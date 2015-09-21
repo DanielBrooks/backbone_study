@@ -46,10 +46,11 @@ $(function() {
         delete attrs.content;
       }
       if (errors) {
-        options.hookError.call(options.view, _.extend(options, {validationError: attrs}));
+        options.invalidCallback(_.extend(options, {validationError: attrs}));
         return attrs;
       }
     }
+
   });
 
   var NotesList = Backbone.Collection.extend({
@@ -75,6 +76,7 @@ $(function() {
       //this.listenTo(this.model, 'invalid', this.invalid);
     },
     render: function() {
+      console.log('render');
       this.$el.html(this.template(this.model.toJSON()));
       return this;
     },
@@ -82,25 +84,32 @@ $(function() {
       this.model.destroy();
       return false;
     },
+    /*renderEdit: function() {
+      this.renderShow();
+    },*/
     updateNote: function() {
-      var k;
+      /*return false;
+      console.log(this.model.get('title'));
+      v = this.model.set({
+        title: this.model.get('title').slice(0,4)
+      });
+      l = this.model.validate(v.toJSON());
+      this.model.save();*/
+      var l, k, v;
 
       this.$el.closest('[data-notes-list]').children('li').removeClass('error');
 
       k = this.model.save({
         title: this.model.get('title').slice(0,2)
       }, {
-        wait: true,
         view: this,
-        hookError: function(error) {
-          console.log(222);
-          this.$el.addClass('error');
-        }
+        invalidCallback: this.invalidCallback.bind(this)
       });
       return false;
     },
-    invalid: function(error) {
-      console.log('b>');
+    invalidCallback: function(error) {
+      console.log(222);
+      this.$el.addClass('error');
     }
   });
 
@@ -117,22 +126,9 @@ $(function() {
       this.$title = this.$noteForm.find('[data-note-title]');
       this.$content = this.$noteForm.find('[data-note-content]');
       this.listenTo(Notes, 'add', this.addOne);
-      //this.listenTo(Notes, 'invalid', this.noteError);
+      //this.listenTo(Notes, 'invalid', this.invalidCallback);
 
       Notes.fetch();
-    },
-    noteError: function(error) {
-      //console.log('a>');
-      var er = error.validationError,
-          prop;
-      for (prop in er) {
-        if (prop == 'title') {
-          Helpers.showError(this.$title, true, er[prop]);
-        }
-        else if (prop == 'content') {
-          Helpers.showError(this.$content, true, er[prop]);
-        }
-      }
     },
     render: function() {
       console.log(2);
@@ -152,10 +148,21 @@ $(function() {
         // so i don't need to check in the addOne method whether the passedModel is valid
         wait: true,
         view: this,
-        hookError: function(error) {
-          this.noteError(error);
-        }
+        invalidCallback: this.invalidCallback.bind(this)
       });
+    },
+    invalidCallback: function(error) {
+      console.log('Addition error');
+      var er = error.validationError,
+          prop;
+      for (prop in er) {
+        if (prop == 'title') {
+          Helpers.showError(this.$title, true, er[prop]);
+        }
+        else if (prop == 'content') {
+          Helpers.showError(this.$content, true, er[prop]);
+        }
+      }
     }
 
   });
