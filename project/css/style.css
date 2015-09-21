@@ -36,23 +36,26 @@ a:hover                        { text-decoration:none; }*/
 .notes-list .title {
   display: block;
   font-weight: bold;
-  cursor: pointer;
   padding: 10px 15px;
+  overflow: hidden;
 }
 .notes-list .note {
   display: block;
   padding: 0 15px 10px;
 }
-.notes-list .btn-remove {
-  color: #CCC;
+.notes-list .control-btn {
   display: block;
-  position: absolute;
-  right: 10px;
-  top: 10px;
+  color: #CCC;
   text-decoration: none;
+  float: right;
+  margin: 10px 10px 0 5px;
 }
-.notes-list .btn-remove:hover {
+.notes-list .control-btn:hover {
   color: #333;
+}
+
+.notes-list .form-list {
+  padding: 15px;
 }
 
 .error {

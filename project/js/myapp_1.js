@@ -53,21 +53,6 @@ $(function() {
 
 // saveData method should be written as a Model method in order to overwrite the backbone saving method
 
-/*
-у меня есть коллекция, в которую добавляются модели. у модели есть валидация,
-которая срабатывает при создании новой модели и при изменении в уже существующей модели.
-мне нужно выводить разные сообщения в зависимости какой из случаев вызвал валидацию.
-я могу при сохранении модели передавать еще и флаг какой-то, что бы отследить откуда пришло сохранение?
-
-
-
- 1. стоит ли использовать метод валидации в самой модели? (и спросить про хук)
- 2. на сколько валидный случай, когда справа (NoteView) я заменю на другую вьюху для редактирования,
- а потом снова назад?
- 3. где стоит писать основную логику в коллекции или во вьюхе?
-*/
-
-
   var Note = Backbone.Model.extend({
     defaults: function() {
       return {
@@ -90,50 +75,65 @@ $(function() {
     tagName: 'li',
     className: 'list-group-item',
     template: _.template($('#note-template').html()),
+    editTemplate: _.template($('#note-edit-template').html()),
     events: {
       'click [data-remove-note]': 'removeNote',
+      'click [data-edit-note]': 'editNote',
+      'click [data-cancel-update]': 'render',
       'click [data-update-note]': 'updateNote'
     },
     initialize: function() {
+      this.$el.title = function() {
+        return this.find('[data-note-title]');
+      };
+      this.$el.content = function() {
+        return this.find('[data-note-content]');
+      };
       this.listenTo(this.model, 'destroy', this.remove);
       this.listenTo(this.model, 'sync', this.render);
       //this.listenTo(this.model, 'invalid', this.invalid);
     },
     render: function() {
       console.log('render');
-      this.$el.html(this.template(this.model.toJSON()));
+      this.$el.removeClass('error').html(this.template(this.model.toJSON()));
       return this;
     },
     removeNote: function() {
       this.model.destroy();
       return false;
     },
-    /*renderEdit: function() {
-      this.renderShow();
-    },*/
-    updateNote: function() {
-      /*return false;
-      console.log(this.model.get('title'));
-      v = this.model.set({
-        title: this.model.get('title').slice(0,4)
-      });
-      l = this.model.validate(v.toJSON());
-      this.model.save();*/
-      var l, k, v;
-
-      this.$el.closest('[data-notes-list]').children('li').removeClass('error');
-
-      k = this.model.save({
-        title: this.model.get('title').slice(0,2)
-      }, {
-        view: this,
-        invalidCallback: this.invalidCallback.bind(this)
-      });
+    editNote: function() {
+      this.$el.html(this.editTemplate(this.model.toJSON()));
       return false;
     },
-    invalidCallback: function(error) {
-      console.log(222);
-      this.$el.addClass('error');
+    updateNote: function() {
+      var modelData = {
+        title: this.$el.title().val(),
+        content: this.$el.content().val()
+      },
+      validationResult = Validation.note(modelData);
+
+      Helpers.removeError(this.$el);
+      if (validationResult.validationError) {
+        this.$el.addClass('error');
+        this.noteError(validationResult);
+      }
+      else {
+        this.model.save(modelData);
+      }
+      return false;
+    },
+    noteError: function(er) {
+      console.log('Eddition error');
+      var prop;
+      for (prop in er) {
+        if (prop == 'title') {
+          Helpers.showError(this.$el.title(), true, er[prop]);
+        }
+        else if (prop == 'content') {
+          Helpers.showError(this.$el.content(), true, er[prop]);
+        }
+      }
     }
   });
 
@@ -196,7 +196,6 @@ $(function() {
         }
       }
     }
-
   });
 
   var App = new AppView;

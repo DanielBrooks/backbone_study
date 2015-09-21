@@ -48,10 +48,24 @@
     </div>
 
     <script id="note-template" type="text/template">
-      <a href="#" data-remove-note="" alt="Delete note" class="btn-remove glyphicon glyphicon-remove"></a>
-      <a href="#" data-update-note="">Update</a>
+      <a href="#" data-remove-note="" alt="Delete note" class="control-btn glyphicon glyphicon-remove"></a>
+      <a href="#" data-edit-note="" alt="Edit note" class="control-btn glyphicon glyphicon-edit"></a>
       <span class="title"><%- title %></span>
       <span class="note"><%- content %></span>
+    </script>
+    <script id="note-edit-template" type="text/template">
+      <ul class="form-list">
+        <li class="form-group">
+          <input type="text" class="form-control" placeholder="Title" data-note-title="" value="<%- title %>">
+        </li>
+        <li class="form-group">
+          <textarea class="form-control" placeholder="Note content" data-note-content=""><%- content %></textarea>
+        </li>
+        <li class="clearfix">
+          <button type="button" class="btn btn-primary" data-update-note="">Update note</button>
+          <button type="button" class="btn btn-default pull-right" data-cancel-update="">Cancel</button>
+        </li>
+      </ul>
     </script>
     <script id="error-template" type="text/template">
       <span class="error-text" data-error-text=""><%= text %></span>
