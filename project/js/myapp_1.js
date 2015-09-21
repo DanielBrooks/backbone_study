@@ -15,42 +15,66 @@ Helpers = {
     else {
       $block.find('[data-error-text]').remove();
     }
+  },
+  isObjEmpty: function(obj) {
+    var prop;
+    for (prop in obj) {
+      return false;
+    }
+    return true;
   }
 }
 
 
+Validation = {
+  note: function(attrs) {
+    var errors = {};
+
+    if (attrs.title.length < 3) {
+      errors.title = 'Title can\'t be shorter than 3 symbols.';
+    }
+    if (!attrs.content.length) {
+      errors.content = 'Note can\'t be blank.';
+    }
+    return this.prepareValidationResult(errors);
+  },
+  prepareValidationResult: function(obj) {
+    if (!Helpers.isObjEmpty(obj)) {
+      obj.validationError = true;
+    }
+    else {
+      obj.validationError = false;
+    }
+    return obj;
+  }
+}
+
 $(function() {
 
-  var Note = Backbone.Model.extend({
+// saveData method should be written as a Model method in order to overwrite the backbone saving method
 
+/*
+у меня есть коллекция, в которую добавляются модели. у модели есть валидация,
+которая срабатывает при создании новой модели и при изменении в уже существующей модели.
+мне нужно выводить разные сообщения в зависимости какой из случаев вызвал валидацию.
+я могу при сохранении модели передавать еще и флаг какой-то, что бы отследить откуда пришло сохранение?
+
+
+
+ 1. стоит ли использовать метод валидации в самой модели? (и спросить про хук)
+ 2. на сколько валидный случай, когда справа (NoteView) я заменю на другую вьюху для редактирования,
+ а потом снова назад?
+ 3. где стоит писать основную логику в коллекции или во вьюхе?
+*/
+
+
+  var Note = Backbone.Model.extend({
     defaults: function() {
       return {
         title: 'New title',
         content: 'no content yet'
       }
-    },
-    validate: function(attrs, options) {
-      var errors = false;
-      if (attrs.title.length < 3) {
-        attrs.title = 'Title can\'t be shorter than 3 symbols.';
-        errors = true;
-      }
-      else {
-        delete attrs.title;
-      }
-      if (!attrs.content.length) {
-        attrs.content = 'Note can\'t be blank.';
-        errors = true;
-      }
-      else {
-        delete attrs.content;
-      }
-      if (errors) {
-        options.invalidCallback(_.extend(options, {validationError: attrs}));
-        return attrs;
-      }
     }
-
   });
 
   var NotesList = Backbone.Collection.extend({
@@ -139,22 +163,30 @@ $(function() {
       this.$notesList.append(view.render().el);
     },
     createNote: function(e) {
-      Helpers.removeError(this.$noteForm);
-      Notes.create({
+      var modelData,
+          validationResult;
+
+      modelData = {
         title: this.$title.val(),
         content: this.$content.val()
-      }, {
-        // wait: true - validates data, saves it and only then triggers the "Add" event,
-        // so i don't need to check in the addOne method whether the passedModel is valid
-        wait: true,
-        view: this,
-        invalidCallback: this.invalidCallback.bind(this)
-      });
+      };
+
+      Helpers.removeError(this.$noteForm);
+      validationResult = Validation.note(modelData);
+
+      if (validationResult.validationError) {
+        this.noteError(validationResult);
+      }
+      else {
+        Notes.create(modelData, {
+          wait: true
+        });
+      }
+      return false;
     },
-    invalidCallback: function(error) {
+    noteError: function(er) {
       console.log('Addition error');
-      var er = error.validationError,
-          prop;
+      var prop;
       for (prop in er) {
         if (prop == 'title') {
           Helpers.showError(this.$title, true, er[prop]);
