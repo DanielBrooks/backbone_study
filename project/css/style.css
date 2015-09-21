@@ -55,6 +55,9 @@ a:hover                        { text-decoration:none; }*/
   color: #333;
 }
 
+.error {
+  background: #F9EEEE;
+}
 .error-text {
   display: inline-block;
   color: #FF4D4D;

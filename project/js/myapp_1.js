@@ -46,10 +46,10 @@ $(function() {
         delete attrs.content;
       }
       if (errors) {
+        options.hookError.call(options.view, _.extend(options, {validationError: attrs}));
         return attrs;
       }
     }
-
   });
 
   var NotesList = Backbone.Collection.extend({
@@ -66,10 +66,13 @@ $(function() {
     className: 'list-group-item',
     template: _.template($('#note-template').html()),
     events: {
-      'click [data-remove-note]': 'removeNote'
+      'click [data-remove-note]': 'removeNote',
+      'click [data-update-note]': 'updateNote'
     },
     initialize: function() {
       this.listenTo(this.model, 'destroy', this.remove);
+      this.listenTo(this.model, 'sync', this.render);
+      //this.listenTo(this.model, 'invalid', this.invalid);
     },
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -78,6 +81,26 @@ $(function() {
     removeNote: function() {
       this.model.destroy();
       return false;
+    },
+    updateNote: function() {
+      var k;
+
+      this.$el.closest('[data-notes-list]').children('li').removeClass('error');
+
+      k = this.model.save({
+        title: this.model.get('title').slice(0,2)
+      }, {
+        wait: true,
+        view: this,
+        hookError: function(error) {
+          console.log(222);
+          this.$el.addClass('error');
+        }
+      });
+      return false;
+    },
+    invalid: function(error) {
+      console.log('b>');
     }
   });
 
@@ -89,16 +112,17 @@ $(function() {
     },
     initialize: function() {
       console.log(1);
-      this.notesList = this.$('[data-notes-list]');
+      this.$notesList = this.$('[data-notes-list]');
       this.$noteForm = this.$('[data-note-form]');
       this.$title = this.$noteForm.find('[data-note-title]');
       this.$content = this.$noteForm.find('[data-note-content]');
       this.listenTo(Notes, 'add', this.addOne);
-      this.listenTo(Notes, 'invalid', this.noteError);
+      //this.listenTo(Notes, 'invalid', this.noteError);
 
       Notes.fetch();
     },
     noteError: function(error) {
+      //console.log('a>');
       var er = error.validationError,
           prop;
       for (prop in er) {
@@ -115,15 +139,22 @@ $(function() {
     },
     addOne: function(passedModel) {
       console.log(3);
-      if (!passedModel.isValid()) return;
       var view = new NoteView({model: passedModel});
-      this.notesList.append(view.render().el);
+      this.$notesList.append(view.render().el);
     },
     createNote: function(e) {
       Helpers.removeError(this.$noteForm);
       Notes.create({
         title: this.$title.val(),
         content: this.$content.val()
+      }, {
+        // wait: true - validates data, saves it and only then triggers the "Add" event,
+        // so i don't need to check in the addOne method whether the passedModel is valid
+        wait: true,
+        view: this,
+        hookError: function(error) {
+          this.noteError(error);
+        }
       });
     }
 
