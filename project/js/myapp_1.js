@@ -205,7 +205,16 @@ $(function() {
     }
   });
 
-  //var dispatcher = _.extend({}, Backbone.Events);
+  //var Nav = Backbone.View.extend({
+  //  el: '[data-navbar]',
+  //  initialize: function(name) {
+  //    this.$el
+  //      .find('[data-link-holder]').removeClass('active')
+  //      .filter('[data-link-holder="'+name+'"]').addClass('active');
+  //  }
+  //});
+
+  var dispatcher = _.extend({}, Backbone.Events);
 
   var Router = Backbone.Router.extend({
 
@@ -217,30 +226,23 @@ $(function() {
       "":                     "index"
     },
     index: function() {
-      console.log(1);
       Helpers.showPage('home');
       new CreateNotePageView;
       //new Nav('home');
     },
     two: function() {
-      console.log(2);
       Helpers.showPage('two');
       //new Nav('two');
     },
     three: function() {
-      console.log(3);
       Helpers.showPage('three');
       //new Nav('three');
     }
-    //help: function() {
-    //  ...
-    //},
-    //
     //search: function(query, page) {
     //  ...
     //}
-
   });
+
   var router = new Router();
   Backbone.history.start();
   //router.navigate('');
