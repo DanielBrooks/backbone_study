@@ -21,9 +21,25 @@
   </head>
   <body>
 
-    <div id="notes-wrap">
+    <div class="container">
+      <h1>Backbone study</h1>
+      <nav class="custom-navbar navbar navbar-default" data-navbar="">
+        <ul class="nav navbar-nav">
+          <li data-link-holder="home"><a href="#">Home</a></li>
+          <li data-link-holder="two"><a href="#test2">two</a></li>
+          <li data-link-holder="three"><a href="#test3">three</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="hidden" data-page="three">
+      <div class="container"><h2>Test 3</h2></div>
+    </div>
+    <div class="hidden" data-page="two">
+      <div class="container"><h2>Test 2</h2></div>
+    </div>
+    <div id="notes-wrap" class="hidden" data-page="home">
       <div class="container">
-        <h1>Backbone study</h1>
         <div class="row">
           <div class="col-xs-6">
             <form data-note-form="">
@@ -35,7 +51,7 @@
                   <textarea class="form-control" placeholder="Note content" data-note-content=""></textarea>
                 </li>
                 <li>
-                  <button id="new-note" type="button" class="btn btn-primary">Add note</button>
+                  <button id="new-note" type="button" class="btn btn-primary" data-new-note="">Add note</button>
                 </li>
               </ul>
             </form>
@@ -70,5 +86,7 @@
     <script id="error-template" type="text/template">
       <span class="error-text" data-error-text=""><%= text %></span>
     </script>
+
+
   </body>
 </html>

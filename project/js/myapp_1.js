@@ -22,6 +22,12 @@ Helpers = {
       return false;
     }
     return true;
+  },
+  showPage: function(name) {
+    $('[data-page]').addClass('hidden').filter('[data-page="'+name+'"]').removeClass('hidden');
+    $('[data-navbar]')
+      .find('[data-link-holder]').removeClass('active')
+      .filter('[data-link-holder="'+name+'"]').addClass('active');
   }
 }
 
@@ -52,6 +58,7 @@ Validation = {
 $(function() {
 
 // saveData method should be written as a Model method in order to overwrite the backbone saving method
+
 
   var Note = Backbone.Model.extend({
     defaults: function() {
@@ -94,7 +101,7 @@ $(function() {
       //this.listenTo(this.model, 'invalid', this.invalid);
     },
     render: function() {
-      console.log('render');
+      //console.log('render');
       this.$el.removeClass('error').html(this.template(this.model.toJSON()));
       return this;
     },
@@ -137,11 +144,11 @@ $(function() {
     }
   });
 
-  var AppView = Backbone.View.extend({
+  var CreateNotePageView = Backbone.View.extend({
 
-    el: '#notes-wrap',
+    el: '[data-page="home"]',
     events: {
-      'click #new-note': 'createNote'
+      'click [data-new-note]': 'createNote'
     },
     initialize: function() {
       console.log(1);
@@ -198,6 +205,49 @@ $(function() {
     }
   });
 
-  var App = new AppView;
+  //var dispatcher = _.extend({}, Backbone.Events);
+
+  var Router = Backbone.Router.extend({
+
+    routes: {
+      "test2":                 "two",    // #help
+      "test3":                 "three",    // #help
+      "search/:query":        "search",  // #search/kiwis
+      "search/:query/p:page": "search",   // #search/kiwis/p7
+      "":                     "index"
+    },
+    index: function() {
+      console.log(1);
+      Helpers.showPage('home');
+      new CreateNotePageView;
+      //new Nav('home');
+    },
+    two: function() {
+      console.log(2);
+      Helpers.showPage('two');
+      //new Nav('two');
+    },
+    three: function() {
+      console.log(3);
+      Helpers.showPage('three');
+      //new Nav('three');
+    }
+    //help: function() {
+    //  ...
+    //},
+    //
+    //search: function(query, page) {
+    //  ...
+    //}
+
+  });
+  var router = new Router();
+  Backbone.history.start();
+  //router.navigate('');
+
+  // app.router.navigate();
+  // router.navigate('', {trigger: true});
+
+  //new CreateNotePageView;
 
 });
