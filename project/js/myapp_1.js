@@ -71,7 +71,43 @@ $(function() {
 
   var NotesList = Backbone.Collection.extend({
     model: Note,
-    localStorage: new Backbone.LocalStorage('notes-backbone')
+    localStorage: new Backbone.LocalStorage('notes-backbone'),
+    initialize: function() {
+      // TO ASK: do i really need to specify the 'this' context here?
+      this.on('search', this.search, this);
+    },
+    search: function(value) {
+      console.log(value);
+      _.each(this.models, function(model, mIndex, mArray) {
+        var m = model.toJSON(),
+            matchingText = '<span class="search-matching">'+value+'</span>',
+            result = {
+              matching: false,
+              lastModel: false
+            },
+            splited,
+            compiled,
+            prop,
+            i;
+
+        delete m.id;
+        for (prop in m) {
+          splited = m[prop].split(value);
+          compiled = splited[0];
+          if (splited.length > 1) {
+            result.matching = true;
+            for (i = 1; i < splited.length; i++) {
+              compiled += matchingText + splited[i];
+            }
+          }
+          result[prop] = compiled;
+        }
+        if (mIndex == mArray.length - 1) {
+          result.lastModel = true;
+        }
+        model.trigger('runViewSearch', result);
+      });
+    }
   });
 
   var Notes = new NotesList;
@@ -98,7 +134,22 @@ $(function() {
       };
       this.listenTo(this.model, 'destroy', this.remove);
       this.listenTo(this.model, 'sync', this.render);
+      this.listenTo(this.model, 'runViewSearch', this.renderSearch);
       //this.listenTo(this.model, 'invalid', this.invalid);
+    },
+    renderSearch: function(modelShadow) {
+      console.log('render search', modelShadow);
+      this.$el.removeClass('error')
+      if (modelShadow.matching) {
+        this.$el.removeClass('hidden').html(this.template(modelShadow));
+      }
+      else {
+        this.$el.addClass('hidden');
+      }
+      if (modelShadow.lastModel) {
+        this.$el.siblings().removeClass('item-first item-last').filter(':visible').first().addClass('item-first');
+        this.$el.siblings().filter(':visible').last().addClass('item-last');
+      }
     },
     render: function() {
       //console.log('render');
@@ -151,21 +202,21 @@ $(function() {
       'click [data-new-note]': 'createNote'
     },
     initialize: function() {
-      console.log(1);
       this.$notesList = this.$('[data-notes-list]');
       this.$noteForm = this.$('[data-note-form]');
       this.$title = this.$noteForm.find('[data-note-title]');
       this.$content = this.$noteForm.find('[data-note-content]');
+
+      Helpers.removeError(this.$noteForm);
+
       this.listenTo(Notes, 'add', this.addOne);
       //this.listenTo(Notes, 'invalid', this.invalidCallback);
 
       Notes.fetch();
     },
     render: function() {
-      console.log(2);
     },
     addOne: function(passedModel) {
-      console.log(3);
       var view = new NoteView({model: passedModel});
       this.$notesList.append(view.render().el);
     },
@@ -214,15 +265,45 @@ $(function() {
   //  }
   //});
 
+  var SearchNotePageView = Backbone.View.extend({
+    el: '[data-page="search"]',
+    events: {
+      'change [data-search-field]': 'runSearch',
+      'keyup [data-search-field]': 'runSearch',
+      'paste [data-search-field]': 'runSearch'
+    },
+    initialize: function() {
+      this.$notesList = this.$('[data-notes-list]');
+      this.$searchField = this.$('[data-search-field]');
+
+      this.listenTo(Notes, 'add', this.addOne);
+      // TO ASK: whether it's possible to combine all three event listeners (change, keyup, paste)
+      //this.listenTo(this.$searchField, 'change', this.runSearch);
+
+      Notes.fetch();
+      Notes.trigger('search', this.$searchField.val());
+    },
+    runSearch: function() {
+      var value = this.$searchField.val();
+      if (this.previousSearch == value) return;
+      this.previousSearch = value;
+      Notes.trigger('search', value);
+    },
+    addOne: function(passedModel) {
+      var view = new NoteView({model: passedModel});
+      this.$notesList.append(view.render().el);
+    }
+  });
+
   var dispatcher = _.extend({}, Backbone.Events);
 
   var Router = Backbone.Router.extend({
 
     routes: {
-      "test2":                 "two",    // #help
-      "test3":                 "three",    // #help
-      "search/:query":        "search",  // #search/kiwis
-      "search/:query/p:page": "search",   // #search/kiwis/p7
+      "search":               "search",
+      "test3":                "three",
+      "search/:query":        "example-search",  // #search/kiwis
+      "search/:query/p:page": "example-search-2",   // #search/kiwis/p7
       "":                     "index"
     },
     index: function() {
@@ -230,8 +311,9 @@ $(function() {
       new CreateNotePageView;
       //new Nav('home');
     },
-    two: function() {
-      Helpers.showPage('two');
+    search: function() {
+      Helpers.showPage('search');
+      new SearchNotePageView;
       //new Nav('two');
     },
     three: function() {

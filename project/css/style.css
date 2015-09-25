@@ -57,6 +57,18 @@ a:hover                        { text-decoration:none; }*/
 .notes-list .form-list {
   padding: 15px;
 }
+.notes-list .search-matching {
+  color: #FFF;
+  background: #333;
+}
+.notes-list .item-first {
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.notes-list .item-last {
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
 
 .error {
   background: #F9EEEE;
