@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=yes">
+    <title>GumWrapper example</title>
+</head>
+<body>
+
+    <div class="container">
+      <input id="file-input" type="file" />
+      <div id="video-file-error" style="color: #e00;"></div>
+      <br>
+      <video id="video-file-preview"></video>
+    </div>
+
+    <script>
+      (function() {
+        var file = document.getElementById('file-input'),
+            video = document.getElementById('video-file-preview'),
+            error = document.getElementById('video-file-error'),
+            fileReaderLoaded,
+            videoLoaded;
+
+        video.onloadeddata = function() {
+          this.fastSeek(3);
+          console.log('video loaded');
+        }
+
+        file.addEventListener('change', function() {
+          var that = this,
+              fileReader = new FileReader();
+
+          fileReader.onload = function() {
+            video.src = this.result;
+            console.log('fr loaded');
+          };
+
+          if (parseInt(that.files[0].size / 1024 / 1024) < 50) {
+            fileReader.readAsDataURL(that.files[0]);
+            error.textContent = '';
+          }
+          else {
+            file.value = '';
+            error.textContent = "The video file size should be less than 50Mb";
+          }
+        });
+      })();
+    </script>
+
+    <h1>GumWrapper example</h1>
+
+    <video id="myVideo"></video>
+    <br>
+    <button type="button" id="start-stream">Start streaming</button>
+    <button type="button" id="stop-stream">Stop streaming</button>
+
+    <script src="GumWrapper-master/adapter.js"></script>
+    <script src="GumWrapper-master/RecordRTC.js"></script>
+    <!--<script src="GumWrapper-master/gumwrapper.js"></script>-->
+    <script>
+
+    var video = document.getElementById('myVideo');
+    var audioRecorder;
+
+    var videoRecorder;
+
+    var session = {
+      audio: true,
+      video: true
+    };
+    var MS, MSA, MSV;
+    //var recordRTC = null;
+    document.getElementById('start-stream').addEventListener('click', function() {
+      //navigator.getUserMedia({audio: true}, function (mediaStream) {
+      //  MSA = mediaStream;
+      //  audioRecorder = RecordRTC(mediaStream, {
+      //    recorderType: StereoAudioRecorder
+      //  });
+      //  audioRecorder.initRecorder(function() {
+      //    audioRecorder.startRecording();
+      //  });
+      //}, function(error) {
+      //
+      //});
+      //navigator.getUserMedia({video: true}, function (mediaStream) {
+      //  MSV = mediaStream;
+      //  videoRecorder = RecordRTC(mediaStream, {
+      //    type: 'video'
+      //  });
+      //  videoRecorder.initRecorder(function() {
+      //    videoRecorder.startRecording();
+      //  });
+      //  if (typeof(video.mozSrcObject) !== 'undefined') {
+      //    video.mozSrcObject = mediaStream;
+      //  } else {
+      //    video.src = URL.createObjectURL(mediaStream);
+      //  }
+      //  video.play();
+      //}, function(error) {
+      //
+      //});
+      //
+      //return false;
+      navigator.getUserMedia(session, function (mediaStream) {
+
+        MS = mediaStream;
+
+        if (webrtcDetectedBrowser == 'firefox') {
+          videoRecorder = RecordRTC(mediaStream, {
+            type: 'video'
+          });
+          //video.mozSrcObject = mediaStream;
+          videoRecorder.startRecording();
+        }
+        else {
+          audioRecorder = RecordRTC(mediaStream, {
+            recorderType: StereoAudioRecorder
+          });
+
+          videoRecorder = RecordRTC(mediaStream, {
+            recorderType: WhammyRecorder
+          });
+
+
+          videoRecorder.initRecorder(function() {
+            audioRecorder.initRecorder(function() {
+              // Both recorders are ready to record things accurately
+              //videoRecorder.startRecording();
+              //audioRecorder.startRecording();
+            //video.src = (window.URL && window.URL.createObjectURL(mediaStream)) || mediaStream;
+            });
+          });
+        }
+
+          //audioRecorder = RecordRTC(mediaStream, {
+          //  recorderType: StereoAudioRecorder
+          //});
+          //
+          //if (webrtcDetectedBrowser == 'firefox') {
+          //  //  ignoreMutedMedia: true
+          //
+          //  videoRecorder = RecordRTC(mediaStream, {
+          //    type: 'video'
+          //  });
+          //}
+          //else {
+          //  videoRecorder = RecordRTC(mediaStream, {
+          //    recorderType: WhammyRecorder
+          //  });
+          //}
+          //
+          //
+          //videoRecorder.initRecorder(function() {
+          //  audioRecorder.initRecorder(function() {
+          //    // Both recorders are ready to record things accurately
+          //    videoRecorder.startRecording();
+          //    audioRecorder.startRecording();
+          //  //video.src = (window.URL && window.URL.createObjectURL(mediaStream)) || mediaStream;
+          //  });
+          //});
+
+          if (typeof(video.mozSrcObject) !== 'undefined') {
+            video.mozSrcObject = mediaStream;
+          } else {
+            video.src = URL.createObjectURL(mediaStream);
+          }
+          video.play();
+
+
+      //    MS = mediaStream;
+      //    recordRTC = RecordRTC(mediaStream, {
+      //        type: 'video'
+      //    });
+      //  recordRTC.startRecording();
+      }, function(error) {
+        console.log(error);
+      });
+    });
+
+    document.getElementById('stop-stream').addEventListener('click', function() {
+      MS.stop();
+      //MSA.stop();
+      //MSV.stop();
+      videoRecorder.stopRecording();
+      if (webrtcDetectedBrowser != 'firefox') {
+        audioRecorder.stopRecording();
+      }
+
+
+      //recordRTC.stopRecording(function() {
+      //    mediaS.stop();
+      //    recordRTC.save('RTC-video-testin-1');
+      //});
+      //mediaS.stop();
+      //var formData = new FormData();
+      //formData.append('recorded-video-file', recordRTC.getBlob());
+      //recordRTC.save('RTC-video-testing');
+    });
+
+
+    //    var gum;
+    //(function() {
+    //    document.getElementById('stop-stream').addEventListener('click', function() {
+    //       gum.stop();
+    //    });
+    //    function showSuccess(video) {
+    //        alert('Hey, it works! Dimensions: ' + video.videoWidth + ' x ' + video.videoHeight);
+    //    }
+    //    function showError(error) {
+    //        alert('Oops: ' + error.message);
+    //    }
+    //    gum = new GumWrapper({video: 'myVideo'}, showSuccess, showError);
+    //    gum.play();
+    //    //setTimeout(function() {
+    //    //    gum.video.pause();
+    //    //}, 5000);
+    //
+    //})();
+    </script>
+</body>
+</html>
