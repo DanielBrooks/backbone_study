@@ -1,2 +1,7 @@
-node_modules
+node_modules/
 build
+
+email_slicing
+font-awesome-4.4.0
+react-0.14.0
+react-flux-simple-app-master
